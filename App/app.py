@@ -19,16 +19,17 @@ data = cdc.cpi_data('../Data/CPI_time_series_December_2022.xls')
 
 ##Layout section with components to be displayed
 years = data['Date'].dt.year.unique()
+marks1 = {i: str(i) for i in years}
 
 app.layout = html.Div(children=[
     html.H1(children='CPI Dashboard'),
     dcc.Dropdown(data.Index.unique(), id='inflation', multi=False, value = "GENERAL INDEX (CPI)"),
-    dcc.RangeSlider(min=years[0],
-                    max=years[-1],
+    dcc.RangeSlider(min=min(years),
+                    max=max(years),
                     step=1,
-                    marks={i:'{}'.format(10) for i in years)},
+                    marks=None,
                     tooltip={"placement": "bottom", "always_visible": True},
-               id='years'),
+                    id='years'),
     html.Div(id = 'output_container', children=[]),
     dcc.Graph(
         id='cpi-fig',
