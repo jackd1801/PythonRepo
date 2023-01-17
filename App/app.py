@@ -18,10 +18,17 @@ data = cdc.cpi_data('../Data/CPI_time_series_December_2022.xls')
 #fig1 = px.line(data, x="Date", y="CPI", title='General Inflation - Rwanda', color="Level")
 
 ##Layout section with components to be displayed
+years = data['Date'].dt.year.unique()
 
 app.layout = html.Div(children=[
     html.H1(children='CPI Dashboard'),
     dcc.Dropdown(data.Index.unique(), id='inflation', multi=False, value = "GENERAL INDEX (CPI)"),
+    dcc.RangeSlider(min=years[0],
+                    max=years[-1],
+                    step=1,
+                    marks={i:'{}'.format(10) for i in years)},
+                    tooltip={"placement": "bottom", "always_visible": True},
+               id='years'),
     html.Div(id = 'output_container', children=[]),
     dcc.Graph(
         id='cpi-fig',
@@ -42,7 +49,8 @@ def update_graph(inflation):
 
     dff = data.copy()
     dff = dff.loc[dff["Index"] == inflation]
-    fig = px.line(dff, x="Date", y="CPI", title="{}".format(inflation), color="Level")
+    fig = px.line(dff, x="Date", y="CPI", title="{}".format(inflation), color="Level",
+                  labels={"Date": "","CPI":"CPI", "Level":"Geography"})
     
     return container, fig
 
