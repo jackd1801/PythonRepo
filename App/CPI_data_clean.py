@@ -10,6 +10,7 @@ def cpi_data(file):
             df['Index']=df['Index'].str.strip()
             df = df.melt(id_vars=['Province', 'U_R', 'COICOP', 'Index', 'Weights'], var_name='Date', value_name='CPI')
             df['Level']=i
+            df['Month']=df['Date'].dt.month_name(locale='English')
             df_list.append(df)
     cpi = pd.concat(df_list)
     return(cpi)
