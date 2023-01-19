@@ -18,8 +18,9 @@ data = cdc.cpi_data('../Data/CPI_time_series_December_2022.xls')
 # fig1 = px.line(data, x="Date", y="CPI", title='General Inflation - Rwanda', color="Level")
 
 ##Layout section with components to be displayed
-years = list(range(2009,2023))
-marks1 = {i: str(i) for i in years}
+#Create list options for the data
+Years = data['Date'].dt.year.unique().tolist()
+Year_marks = {i: str(i) for i in Years}
 Months = calendar.month_name[1:]
 Index = data.Index.unique()
 
@@ -35,12 +36,12 @@ app.layout = html.Div(children=[
                   inline=True,
                   id='geography'),
     html.Label('Select range'),
-    dcc.RangeSlider(min=min(years),
-                    max=max(years),
+    dcc.RangeSlider(min=min(Years),
+                    max=max(Years),
                     step=1,
-                    marks=marks1,
-                    tooltip={"placement": "bottom", "always_visible": True},
-                    id='years'),
+                    value=[min(Years), max(Years)],
+                    marks=Year_marks,
+                    id='years_chosen'),
     html.Div(id='output_container', children=[]),
     dcc.Graph(
         id='cpi-fig',
@@ -54,10 +55,10 @@ app.layout = html.Div(children=[
      Output(component_id='cpi-fig', component_property='figure')],
     [Input(component_id='inflation', component_property='value'),
      Input(component_id='month', component_property='value'),
-     Input(component_id='years', component_property='value'),
+     Input(component_id='years_chosen', component_property='value'),
      Input(component_id='geography', component_property='value')]
 )
-def update_graph(inflation, month, years, geography):
+def update_graph(inflation, month, years_chosen, geography):
     print(inflation)
     print(type(inflation))
 
